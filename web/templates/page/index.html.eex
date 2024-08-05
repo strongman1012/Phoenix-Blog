@@ -1,0 +1,12 @@
+<div class="posts">
+  <%= if logged_in?(@conn) do %>
+
+    <%= render ElixirStatus.PageView, "index_logged_in.html", current_user: @current_user, conn: @conn %>
+
+  <% else %>
+
+    <%= render ElixirStatus.PageView, "announcement.html", current_user: @current_user, conn: @conn %>
+    <%= render ElixirStatus.PageView, "index_not_logged_in.html", conn: @conn %>
+
+  <% end %>
+</div>

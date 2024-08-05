@@ -1,0 +1,54 @@
+<div class="post <%= @css_class %>">
+  <div class="post-avatar">
+    <div class="image" style="background-image: url(<%= raw avatar_path(@current_user_name) %>)"></div>
+  </div>
+  <%= form_for @changeset, @action, fn f -> %>
+    <%= text_input f, :title, id: "posting_title", class: class_with_error(f, :title, "post-title"), placeholder: "Title goes here (will be tweeted)" %>
+
+    <span class="post-meta">
+      <span class="post-date">Today</span>
+      <span class="post-author">
+        by
+        <a href="https://github.com/<%= raw @current_user_name %>" target="_blank"><i class="icon-git_circle"></i> <%= raw @current_user_name %></a>
+      </span>
+    </span>
+
+    <%= textarea f, :text, id: "posting_text", class: class_with_error(f, :text, "post-body"), placeholder: "Text should describe what you made in prose. Don't forget to link to your project/blog post!" %>
+
+    <div class="functions">
+      <div>
+        <small>
+          Your post might be edited (typos, wording, etc.)<br>
+          You can use Markdown (<a href="#" data-toggle="#formatting-help">formatting help</a>).
+        </small>
+
+        <span>
+          <a href="#" class="btn btn-preview" data-preview-url="<%= preview_posting_path(@conn, :preview) %>">Preview</a>
+          <%= submit "Post this", class: "btn btn-primary" %>
+        </span>
+      </div>
+    </div>
+
+    <div id="formatting-help" style="display: none;">
+      <table>
+        <tr>
+          <th>What you type</th>
+          <th>What you get</th>
+        </tr>
+        <%= for term <- ["[Link](https://github.com/)", "**bold**", "*italics*", "***highlight***", "`inline code`", "Indent with four spaces to render code blocks:\n\n    # This is rendered as a\n    # code block."] do %>
+          <tr>
+            <td><pre><%= raw term%></pre></td>
+            <td><%= sanitized_inline_markdown(term) %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
+
+  <%= if @editing? do %>
+    <hr>
+    <%= link "Delete this posting", to: posting_path(@conn, :delete, @posting), method: :delete, class: "btn btn-danger" %>
+  <% end %>
+</div>
+
+<div class="preview-post-wrapper"></div>
